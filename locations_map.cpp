@@ -3,7 +3,7 @@
 #include <sstream>
 #include "locations_map.h"
 
-std::vector<std::string>& LocationsMap::getLocationRelated(const std::string& iLocation)
+const std::vector<std::string>* LocationsMap::getLocationRelated(const std::string& iLocation)
 {
     if (iLocation.empty()) {
         std::cout << "received empty location" << std::endl; 
@@ -12,7 +12,7 @@ std::vector<std::string>& LocationsMap::getLocationRelated(const std::string& iL
 
     LocationsMapT::const_iterator location = m_locationsMap.find(iLocation); 
     if (location != m_locationsMap.end()) {
-        return location->second;
+        return &location->second;
     }
 
     return NULL;

@@ -6,6 +6,7 @@
 
 
 #include "xml_locations_map.h"
+#include "xml_2_html_generator.h"
 
 /*
 void printLocationData(const pugi::xml_node& iNode, int nest = 0)
@@ -127,7 +128,25 @@ void printDestinationInfo()
     }
 }
 */
+void locationMap_Test(XMLLocationsMap& locationsMap)
+{
+    std::cout << "=========== Location Map unit-test ===========" << std::endl; 
 
+    std::cout << locationsMap.sprint() << std::endl; 
+    std::string location = "Africa";
+    const std::vector<std::string> *related = locationsMap.getLocationRelated(location); 
+
+    if (related != NULL) {
+        std::string relatedList; 
+        std::vector<std::string>::const_iterator it;
+        std::vector<std::string>::const_iterator itend = related->end(); 
+        for (it = related->begin(); it != itend; it++) {
+            relatedList += *it + " "; 
+        }
+
+        std::cout << location << ": " << relatedList << std::endl; 
+    }
+}
 
 //////////////////////////////////////////////////////// Main
 
@@ -146,28 +165,15 @@ int main(int argc, char *argv[])
         return -1;  
     }
 
-    std::cout << locationsMap.sprint() << std::endl; 
-    std::string location = "Africa";
-    std::vector<std::string> *related = locationsMap.getLocationRelated(location); 
-    if (related != NULL) {
-        std::string relatedList; 
-        std::vector<std::string>::const_iterator it;
-        std::vector<std::string>::const_iterator itend = related->end(); 
-        for (it = related->begin(); it != itend; it++) {
-            relatedList += *it + " "; 
-        }
-
-        std::cout << location << ": " << relatedList << std::endl; 
-    }
-
-    /*
-    SimpleHtmlGenerator generator(&locationsMap);
-    if (generator.loadDestinationDataDB(argv[2]) == false) {
+    //locationMap_Test(locationsMap); 
+    std::string destinationsXmlFile = argv[2]; 
+    XMLFile2HTMLGenerator generator(destinationsXmlFile, &locationsMap);
+    if (generator.init() == false) {
         std::cout << "Unable to load destinations data DB" << std::endl; 
         return -1; 
     }
-    */
-    //generator.generateHtml("Africa"); 
+
+    generator.generateHtml("Africa"); 
 
     return 0;
 }

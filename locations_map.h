@@ -23,7 +23,7 @@ public:
     virtual bool initLocationsMap() = 0; // will init the location map
 
     // returns related locations for specific location
-    std::vector<std::string>& getLocationRelated(const std::string& iLocation);
+    const std::vector<std::string>* getLocationRelated(const std::string& iLocation);
 
     std::string sprint() const;
 
