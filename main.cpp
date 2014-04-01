@@ -3,75 +3,11 @@
  */
 
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <map>
-#include <vector>
-#include <pugixml.hpp>
-
-std::map<std::string, std::vector<std::string> > links; 
-
-void updateLinksMap(std::string location, std::string parentLocation)
-{
-    if (location.empty()) {
-        return; 
-    }
-
-    //std::cout << "Updating map - name: " << location << ", parent: " << parentLocation << std::endl; 
-    std::pair<std::map<std::string, std::vector<std::string> >::iterator, bool> rc;
-
-    std::vector<std::string> v;
-    rc = links.insert(std::make_pair<std::string, std::vector<std::string> >(location, v)); 
-    if (rc.second == false) 
-        std::cout << location << " - already exist" << std::endl; 
-
-    if (parentLocation.empty() == false) {
-        rc.first->second.push_back(parentLocation); 
-        links[parentLocation].push_back(location);
-    }  
-}
-
-struct LinksBuilder: pugi::xml_tree_walker
-{
-    virtual bool for_each(pugi::xml_node& node) {
-        //for (int i = 0; i < depth(); ++i) std::cout << "  "; // indentation
-        if (std::string(node.name()) == "node_name") {
-            //std::cout << "*** name='" << node.name() << "', value='" << node.first_child().value() << std::endl; 
-            //std::cout << "*** name: " << node.first_child().value() << ", parent: " << node.parent().parent().child("node_name").first_child().value() << std::endl; 
-            updateLinksMap(node.first_child().value(), node.parent().parent().child("node_name").first_child().value());
-        } 
-        return true; // continue traversal
-    }
-};
 
 
-void buildLinksMap() 
-{
-    pugi::xml_document doc;
+#include "xml_locations_map.h"
 
-    pugi::xml_parse_result result = doc.load_file("taxonomy.xml");
-    //pugi::xml_node world = doc.child("taxonomies").child("taxonomy").child("node");
-    std::cout << "Destination map load result: " << result.description() << std::endl;
-
-    LinksBuilder builder;
-    doc.traverse(builder);
-
-    return; 
-
-    /*
-    std::cout << "Links map:" << std::endl;
-    std::map<std::string, std::vector<std::string> >::const_iterator it;
-    for (it = links.begin(); it != links.end(); it++) {
-        std::string related;
-        std::vector<std::string>::const_iterator vit; 
-        for (vit = it->second.begin(); vit != it->second.end(); vit++) {
-            related += *vit + " ";
-        }
-        std::cout << it->first << " related: " << related << std::endl;
-    } 
-    */ 
-}
-
+/*
 void printLocationData(const pugi::xml_node& iNode, int nest = 0)
 {
     if (iNode.empty()) {
@@ -118,11 +54,6 @@ void printDestinationLocations()
     } else {
         std::cout << "Cannot evaluate quarry" << std::endl; 
     }
-}
-
-void generateHtmlPage(std::string name)
-{
-
 }
 
 struct DataParser: pugi::xml_tree_walker
@@ -195,16 +126,48 @@ void printDestinationInfo()
         }
     }
 }
+*/
+
 
 //////////////////////////////////////////////////////// Main
 
-int main(int argc, char *argv[]) {
-
-    
+int main(int argc, char *argv[]) 
+{  
     std::cout << "Lonely planet HTML generator" << std::endl;
 
-    //printDestinationLocations();
-    buildLinksMap(); 
-    printDestinationInfo();
+    if (argc < 2) {
+        std::cout << "Usage: html-generator <locations map file> <destinations data file>" << std::endl; 
+        return -1; 
+    }
+
+    XMLLocationsMap locationsMap; 
+    if (locationsMap.loadXMLLocationsMap(argv[1]) == false) {
+        std::cout << "Unable to load locations map data" << std::endl;
+        return -1;  
+    }
+
+    std::cout << locationsMap.sprint() << std::endl; 
+    std::string location = "Africa";
+    std::vector<std::string> *related = locationsMap.getLocationRelated(location); 
+    if (related != NULL) {
+        std::string relatedList; 
+        std::vector<std::string>::const_iterator it;
+        std::vector<std::string>::const_iterator itend = related->end(); 
+        for (it = related->begin(); it != itend; it++) {
+            relatedList += *it + " "; 
+        }
+
+        std::cout << location << ": " << relatedList << std::endl; 
+    }
+
+    /*
+    SimpleHtmlGenerator generator(&locationsMap);
+    if (generator.loadDestinationDataDB(argv[2]) == false) {
+        std::cout << "Unable to load destinations data DB" << std::endl; 
+        return -1; 
+    }
+    */
+    //generator.generateHtml("Africa"); 
+
     return 0;
 }

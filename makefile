@@ -15,7 +15,8 @@ INCDIR := .
 OBJDIR := .
 
 SRC :=  $(SRCDIR)/main.cpp \
-	$(SRCDIR)/html_generator.cpp
+	$(SRCDIR)/locations_map.cpp \
+	$(SRCDIR)/xml_locations_map.cpp
 
 	
 

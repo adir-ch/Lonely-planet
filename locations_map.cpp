@@ -3,6 +3,21 @@
 #include <sstream>
 #include "locations_map.h"
 
+std::vector<std::string>& LocationsMap::getLocationRelated(const std::string& iLocation)
+{
+    if (iLocation.empty()) {
+        std::cout << "received empty location" << std::endl; 
+        return NULL;
+    }
+
+    LocationsMapT::const_iterator location = m_locationsMap.find(iLocation); 
+    if (location != m_locationsMap.end()) {
+        return location->second;
+    }
+
+    return NULL;
+}
+
 std::string LocationsMap::sprint() const
 {
     if (m_locationsMap.empty()) {
