@@ -14,7 +14,9 @@ SRCDIR := .
 INCDIR := .
 OBJDIR := .
 
-SRC :=  $(SRCDIR)/html_generator.cpp
+SRC :=  $(SRCDIR)/main.cpp \
+	$(SRCDIR)/html_generator.cpp
+
 	
 
 EXE := html_generator
@@ -25,9 +27,7 @@ CFLAGS := -c $(addprefix -I, $(INCDIR)) -O2 -Wall
 
 DBGFLAGS := -g3 -rdynamic -DPROFILER #-pg
 
-LDFLAGS := \
-
-SIMPLE_LDFLAGS := -lpthread 
+LDFLAGS := -lpugixml
 
 all: $(EXE)
 
