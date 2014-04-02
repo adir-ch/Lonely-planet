@@ -57,35 +57,6 @@ void printDestinationLocations()
     }
 }
 
-struct DataParser: pugi::xml_tree_walker
-{
-    virtual bool for_each(pugi::xml_node& node) {
-        
-        std::string depthSign;
-        std::string name, parent, brother; 
-
-        for (int i = 0; i < depth(); i++) {
-            depthSign += "...";
-        }
-        if (node.type() == pugi::node_cdata) {
-            //std::cout << std::endl << depthSign << " Data: " << "Data comes here!" <<  std::endl; //node.value() <<  //std::endl << node.first_child().value() << std::endl; 
-        } else {
-            name = node.name(); 
-            parent = node.parent().name(); 
-            if (node.previous_sibling()) {
-                brother = node.previous_sibling().name(); 
-            }
-
-            if (name != parent) {
-                if (name != brother) {
-                    std::cout << depthSign << "=== " << node.name() << " (parent: " << node.parent().name() << ") ===" << std::endl; 
-                }
-            }
-        } 
-
-        return true;
-    }   
-};
 
 void extractDestinationInfo(pugi::xml_node& iNode)
 {
@@ -173,7 +144,7 @@ int main(int argc, char *argv[])
         return -1; 
     }
 
-    generator.generateHtml("Africa"); 
+    //generator.generateHtml("Africa"); 
 
     return 0;
 }

@@ -1,14 +1,14 @@
 
-
+#include <iostream>
 #include "xml_2_html_generator.h"
 
 bool XMLFile2HTMLGenerator::init()
 {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(m_db);
+    pugi::xml_parse_result result = doc.load_file(m_db.c_str());
     std::cout << "Destination info load result: " << result.description() << std::endl;
 
-    if (result.status != status_ok) {
+    if (result.status != pugi::status_ok) {
         return false; 
     }
 
@@ -34,14 +34,14 @@ void XMLFile2HTMLGenerator::generateHtml(const std::string& iLocation)
 void XMLFile2HTMLGenerator::generateAllDestinationsHTMLPages()
 {
     std::cout << "No destination name given - will generate HTML pages for all destinations" << std::endl; 
-    for (pugi::xml_node_iterator nodeit = destinations.begin(); nodeit != destinations.end(); nodeit++)
+    for (pugi::xml_node_iterator nodeit = m_destinationsTree.begin(); nodeit != m_destinationsTree.end(); nodeit++)
         nodeit->traverse(*this);
 }
 
-void XMLFile2HTMLGenerator::generateDestinationHTMLPage(iLocation)
+void XMLFile2HTMLGenerator::generateDestinationHTMLPage(const std::string& iLocation)
 {
     std::cout << "Generate HTML pages for: " << iLocation << std::endl; 
-    pugi::xml_node destination = m_destinationsTree.child(iLocation); 
+    pugi::xml_node destination = m_destinationsTree.child(iLocation.c_str()); 
     if (destination == NULL) {
         std::cout << "Cannot find destination: " << iLocation; 
         return;
@@ -50,8 +50,6 @@ void XMLFile2HTMLGenerator::generateDestinationHTMLPage(iLocation)
     std::cout << std::endl << "=========" << destination << "=========" << std::endl;
     destination.traverse(*this);
 }
-
-
 
 bool XMLFile2HTMLGenerator::for_each(pugi::xml_node& node)
 {

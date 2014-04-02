@@ -4,7 +4,7 @@
 
 #include <string>
 #include <pugixml.hpp>
-#include "HTMLGenerator.h"
+#include "html_generator.h"
 
 /**
  * TODO: Add class description
@@ -14,7 +14,7 @@
 class XMLFile2HTMLGenerator : public HTMLGenerator<std::string>, pugi::xml_tree_walker {
 public:
     // Constructor
-    XMLFile2HTMLGenerator(T* iDB, LocationsMap *iLocationMap);
+    XMLFile2HTMLGenerator(std::string iDB, LocationsMap *iLocationMap);
 
     // Destructor
     virtual ~XMLFile2HTMLGenerator();
@@ -25,7 +25,7 @@ public:
 private: 
 
     void generateAllDestinationsHTMLPages(); 
-    void generateDestinationHTMLPage(iLocation);
+    void generateDestinationHTMLPage(const std::string& iLocation);
     virtual bool for_each(pugi::xml_node& node);
 
     pugi::xml_node m_destinationsTree;
@@ -33,7 +33,7 @@ private:
 };
 
 // Constructor implementation
-inline XMLFile2HTMLGenerator::XMLFile2HTMLGenerator(T* iDB, LocationsMap *iLocationMap) : HTMLGenerator(iDB, iLocationMap) {
+inline XMLFile2HTMLGenerator::XMLFile2HTMLGenerator(std::string iDB, LocationsMap *iLocationMap) : HTMLGenerator<std::string>(iDB, iLocationMap) {
 }
 
 // Destructor implementation

@@ -18,7 +18,7 @@ SRC :=  $(SRCDIR)/main.cpp \
 	$(SRCDIR)/locations_map.cpp \
 	$(SRCDIR)/xml_locations_map.cpp \
 	$(SRCDIR)/html_generator.cpp \
-	$(SRCDIR)/simple_html_generator.cpp \
+	$(SRCDIR)/xml_2_html_generator.cpp \
 
 	
 

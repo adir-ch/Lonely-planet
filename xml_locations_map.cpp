@@ -24,7 +24,7 @@ bool XMLLocationsMap::loadXMLLocationsMap(const std::string &XMLFileName) {
     pugi::xml_parse_result result = m_locationsMapXml.load_file(XMLFileName.c_str());
     std::cout << "Destination map load result: " << result.description() << std::endl;
 
-    if (result.status != status_ok) {
+    if (result.status != pugi::status_ok) {
         return false; 
     }
 
