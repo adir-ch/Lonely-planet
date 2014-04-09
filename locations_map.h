@@ -12,7 +12,8 @@
 class LocationsMap {
 public:
 
-    typedef std::map<std::string, std::vector<std::string> > LocationsMapT; 
+    typedef std::vector<std::string> RelatedListT; 
+    typedef std::map<std::string, RelatedListT> LocationsMapT; 
 
     // Constructor
     LocationsMap();
@@ -23,7 +24,7 @@ public:
     virtual bool initLocationsMap() = 0; // will init the location map
 
     // returns related locations for specific location
-    const std::vector<std::string>* getLocationRelated(const std::string& iLocation);
+    const RelatedListT* getLocationRelated(const std::string& iLocation);
 
     std::string sprint() const;
 

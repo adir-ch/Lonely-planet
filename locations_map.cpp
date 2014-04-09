@@ -3,7 +3,7 @@
 #include <sstream>
 #include "locations_map.h"
 
-const std::vector<std::string>* LocationsMap::getLocationRelated(const std::string& iLocation)
+const LocationsMap::RelatedListT* LocationsMap::getLocationRelated(const std::string& iLocation)
 {
     if (iLocation.empty()) {
         std::cout << "received empty location" << std::endl; 

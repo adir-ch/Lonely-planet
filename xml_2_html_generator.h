@@ -28,7 +28,7 @@ private:
     void generateDestinationHTMLPage(const std::string& iLocation);
     virtual bool for_each(pugi::xml_node& node);
 
-    pugi::xml_node m_destinationsTree;
+    pugi::xml_document m_destinationsTree;
     std::string m_currentLocation;
 };
 

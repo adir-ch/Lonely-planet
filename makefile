@@ -17,7 +17,6 @@ OBJDIR := .
 SRC :=  $(SRCDIR)/main.cpp \
 	$(SRCDIR)/locations_map.cpp \
 	$(SRCDIR)/xml_locations_map.cpp \
-	$(SRCDIR)/html_generator.cpp \
 	$(SRCDIR)/xml_2_html_generator.cpp \
 
 	
@@ -28,7 +27,7 @@ OBJ := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC))
 
 CFLAGS := -c $(addprefix -I, $(INCDIR)) -O2 -Wall
 
-DBGFLAGS := -g3 -rdynamic -DPROFILER #-pg
+DBGFLAGS := -g -g3 -rdynamic -DPROFILER -pg
 
 LDFLAGS := -lpugixml
 

@@ -1,24 +1,18 @@
 
 #include <iostream>
 #include "xml_2_html_generator.h"
+#include "locations_map.h"
 
 bool XMLFile2HTMLGenerator::init()
 {
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(m_db.c_str());
+    std::cout << "Initializing destinations tree with: " << m_db << std::endl;
+    pugi::xml_parse_result result = m_destinationsTree.load_file(m_db.c_str());
     std::cout << "Destination info load result: " << result.description() << std::endl;
 
     if (result.status != pugi::status_ok) {
         return false; 
     }
 
-    m_destinationsTree = doc.child("destinations");
-    
-    if (m_destinationsTree == NULL) {
-        std::cout << "Cannot find destination DB" << std::endl;
-        return false;
-    }
-    
     return true; 
 }
 
@@ -40,15 +34,32 @@ void XMLFile2HTMLGenerator::generateAllDestinationsHTMLPages()
 
 void XMLFile2HTMLGenerator::generateDestinationHTMLPage(const std::string& iLocation)
 {
-    std::cout << "Generate HTML pages for: " << iLocation << std::endl; 
-    pugi::xml_node destination = m_destinationsTree.child(iLocation.c_str()); 
-    if (destination == NULL) {
-        std::cout << "Cannot find destination: " << iLocation; 
+    if (m_destinationsTree == NULL) {
+        std::cout << "Destination tree is not initialized yet" << std::endl;
         return;
     }
+
+    pugi::xml_node destinations = m_destinationsTree.child("destinations");
+
+    if (destinations == NULL) {
+        std::cout << "cannot locate detinations tree" << std::endl; 
+        return;
+    }
+
+    std::cout << "Generate HTML pages for: " << iLocation << std::endl; 
+    std::string title; 
+
+    for (pugi::xml_node_iterator nodeit = destinations.begin(); nodeit != destinations.end(); nodeit++) {
+        title = nodeit->attribute("title").value();
+        std::cout << "title = " << title << std::endl;
+        if (title == iLocation) {
+            std::cout << std::endl << "=========" << iLocation << "=========" << std::endl;
+            nodeit->traverse(*this);
+            return;
+        }
+    }
     
-    std::cout << std::endl << "=========" << destination << "=========" << std::endl;
-    destination.traverse(*this);
+    std::cout << "Could not find: " << iLocation << std::endl;
 }
 
 bool XMLFile2HTMLGenerator::for_each(pugi::xml_node& node)
@@ -68,9 +79,22 @@ bool XMLFile2HTMLGenerator::for_each(pugi::xml_node& node)
             brother = node.previous_sibling().name(); 
         }
 
-        if (name != parent) {
-            if (name != brother) {
-                std::cout << depthSign << "=== " << node.name() << " (parent: " << node.parent().name() << ") ===" << std::endl; 
+        if (name == "destination") {
+            std::cout << depthSign << "=== " << node.attribute("title").value() << " ===" << std::endl;
+
+            const std::vector<std::string> *related = m_locationsMap->getLocationRelated(std::string(node.attribute("title").value()));
+            std::string relatedList; 
+            LocationsMap::RelatedListT::const_iterator it;
+            LocationsMap::RelatedListT::const_iterator itend = related->end(); 
+            for (it = related->begin(); it != itend; it++) {
+                relatedList += *it + " "; 
+            }
+            std::cout << "   Related: " << "---> " << relatedList << std::endl; 
+        } else{
+            if (name != parent) {
+                if (name != brother) {
+                    std::cout << depthSign << "=== " << node.name() << " (parent: " << node.parent().name() << ") ===" << std::endl; 
+                }
             }
         }
     } 
